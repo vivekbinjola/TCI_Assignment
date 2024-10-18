@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -47,8 +48,8 @@ public class EmployeeController {
 
 //    Still working on it
     @GetMapping("/tci/employee-bonus")
-    public ResponseEntity<BonusEligibleResponse> getBonusEligibleEmployees(@RequestParam("date") String dateStr) {
-        try {
+    public ResponseEntity<BonusEligibleResponse> getBonusEligibleEmployees(@RequestParam("date") String dateStr) throws ParseException {
+
             // Parse the input date
             SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMM-dd-yyyy");
             Date requestedDate = DATE_FORMATTER.parse(dateStr);
@@ -60,14 +61,6 @@ public class EmployeeController {
             // Return the response
             return ResponseEntity.ok(new BonusEligibleResponse("", eligibleEmployees));
 
-        } catch (DateTimeParseException e) {
-            // Return an error message if date parsing fails
-            return ResponseEntity.badRequest().body(new BonusEligibleResponse("Invalid date format", null));
-        } catch (Exception e) {
-            // Generic error handling
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new BonusEligibleResponse("Internal server error", null));
-        }
     }
 
 }
