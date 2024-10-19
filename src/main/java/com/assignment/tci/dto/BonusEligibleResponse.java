@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.util.List;
 
+//To get data given in the given format, created BonusEligibleResponse class and inner classes
+// of the types requested in the pdf format
 @Data
 public class BonusEligibleResponse {
 
@@ -18,20 +20,20 @@ public class BonusEligibleResponse {
     @Data
     public static class CurrencyGroup {
         private String currency;
-        private List<EmployeeDTOBonus> employees;
+        private List<EmployeeRequestBonus> employees;
 
-        public CurrencyGroup(String currency, List<EmployeeDTOBonus> employees) {
+        public CurrencyGroup(String currency, List<EmployeeRequestBonus> employees) {
             this.currency = currency;
             this.employees = employees;
         }
 
     }
     @Data
-    public static class EmployeeDTOBonus {
+    public static class EmployeeRequestBonus {
         private String empName;
         private Double amount;
 
-        public EmployeeDTOBonus(String empName, Double amount) {
+        public EmployeeRequestBonus(String empName, Double amount) {
             this.empName = empName;
             this.amount = amount;
         }

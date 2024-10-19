@@ -1,13 +1,13 @@
 package com.assignment.tci.dto;
 
-import com.assignment.tci.models.Employee;
 import lombok.Data;
 
 import java.util.List;
 
+//DTO for Employee Request in the Post Method
 @Data
 public class EmployeeRequest {
 
-    private List<EmployeeDTO> employees;
+    private List<EmployeeResponse> employees;
 
 }

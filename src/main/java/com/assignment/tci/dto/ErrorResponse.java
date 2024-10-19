@@ -2,6 +2,7 @@ package com.assignment.tci.dto;
 
 import lombok.Data;
 
+//DTO for Error Response
 @Data
 public class ErrorResponse {
         private String error;

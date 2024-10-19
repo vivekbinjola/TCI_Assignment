@@ -1,29 +1,22 @@
 package com.assignment.tci.service;
 import com.assignment.tci.dto.BonusEligibleResponse;
-import com.assignment.tci.dto.EmployeeDTO;
 import com.assignment.tci.dto.EmployeeRequest;
 import com.assignment.tci.models.Department;
 import com.assignment.tci.models.Employee;
 import com.assignment.tci.repository.DepartmentRepository;
 import com.assignment.tci.repository.EmployeeRepository;
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class EmployeeService {
@@ -67,17 +60,27 @@ public class EmployeeService {
 
     }
 
-//Still Working on it
     public List<BonusEligibleResponse.CurrencyGroup> getBonusEligibleEmployees(Date requestedDate) {
-        // Fetch all employees
+//       Taking all Employees from the DB
         List<Employee> allEmployees = employeeRepository.findAll();
 
-
-        // Filter employees who are active on the given date
+        // step 1 : Filtering employees by the provided date and sorting by employee names
         List<Employee> eligibleEmployees = allEmployees.stream()
-                .filter(emp -> !emp.getJoiningDate().after(requestedDate) && !emp.getExitDate().before(requestedDate)).toList();
+                .filter(emp -> emp.getJoiningDate().before(requestedDate) && emp.getExitDate().after(requestedDate))
+                .sorted(Comparator.comparing(Employee::getEmpName))
+                .collect(Collectors.toList());
 
-        return null;
+        // step 2 : Grouping employees by currency
+        Map<String, List<Employee>> groupedByCurrency = eligibleEmployees.stream()
+                .collect(Collectors.groupingBy(Employee::getCurrency));
+
+        // sending the response in the requested format
+        return groupedByCurrency.entrySet().stream()
+                .map(entry -> new BonusEligibleResponse.CurrencyGroup(entry.getKey(),
+                        entry.getValue().stream()
+                                .map(emp -> new BonusEligibleResponse.EmployeeRequestBonus(emp.getEmpName(), emp.getAmount()))
+                                .collect(Collectors.toList())))
+                .collect(Collectors.toList());
     }
-
 }
+

@@ -1,14 +1,10 @@
 package com.assignment.tci.controller;
 import com.assignment.tci.dto.BonusEligibleResponse;
-import com.assignment.tci.dto.EmployeeDTO;
 import com.assignment.tci.dto.EmployeeRequest;
 import com.assignment.tci.models.Employee;
 import com.assignment.tci.repository.EmployeeRepository;
 import com.assignment.tci.service.EmployeeService;
-import lombok.SneakyThrows;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -16,11 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/tci")
@@ -31,11 +25,11 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    //    Just for Testing
-    @GetMapping("/all")
-    public List<Employee> getAllEmployees(){
-        return employeeRepository.findAll();
-    }
+//    //   Just for Testing
+//    @GetMapping("/all")
+//    public List<Employee> getAllEmployees(){
+//        return employeeRepository.findAll();
+//    }
 
 // Requesting payload data and creating Employees in the database
     @PostMapping("/employee-bonus")
@@ -46,20 +40,19 @@ public class EmployeeController {
     }
 
 
-//    Still working on it
-    @GetMapping("/tci/employee-bonus")
-    public ResponseEntity<BonusEligibleResponse> getBonusEligibleEmployees(@RequestParam("date") String dateStr) throws ParseException {
+//    Get mapping takes date from the URL and maps it to String dateStr in the method parameter
+    @GetMapping("/employee-bonus")
+    public ResponseEntity<BonusEligibleResponse> getBonusEligibleEmployees(@NonNull @RequestParam("date") String dateStr) throws ParseException {
 
-            // Parse the input date
-            SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMM-dd-yyyy");
-            Date requestedDate = DATE_FORMATTER.parse(dateStr);
-            System.out.println(requestedDate);
+    // Parse the input date
+    SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMM-dd-yyyy");
+    Date requestedDate = DATE_FORMATTER.parse(dateStr);
+    System.out.println(requestedDate);
 
-            // Get the eligible employees grouped by currency
-            List<BonusEligibleResponse.CurrencyGroup> eligibleEmployees = employeeService.getBonusEligibleEmployees(requestedDate);
+    // Get the eligible employees grouped by currency
+    List<BonusEligibleResponse.CurrencyGroup> eligibleEmployees = employeeService.getBonusEligibleEmployees(requestedDate);
 
-            // Return the response
-            return ResponseEntity.ok(new BonusEligibleResponse("", eligibleEmployees));
+    return ResponseEntity.ok(new BonusEligibleResponse("", eligibleEmployees));
 
     }
 

@@ -1,14 +1,10 @@
 package com.assignment.tci.dto;
 
-import com.assignment.tci.models.Department;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
-import java.time.LocalDate;
-
+//DTO for Employee Response
 @Data
-public class EmployeeDTO {
+public class EmployeeResponse {
 
     private Long id;
 
@@ -19,7 +15,7 @@ public class EmployeeDTO {
     private String exitDate;
     private String department;
 
-    public EmployeeDTO(String empName, Double amount, String currency, String joiningDate, String exitDate, String department) {
+    public EmployeeResponse(String empName, Double amount, String currency, String joiningDate, String exitDate, String department) {
         this.empName = empName;
         this.amount = amount;
         this.currency = currency;
@@ -27,6 +23,5 @@ public class EmployeeDTO {
         this.exitDate = exitDate;
         this.department = department;
     }
-
 
 }
