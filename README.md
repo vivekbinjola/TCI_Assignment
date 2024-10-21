@@ -99,7 +99,7 @@ Request Payload sample:
 
 GET API Signature and Payload
 
-	API: GET /tci//employee-bonus?date=”may-27-2022”
+	API: GET /tci//employee-bonus?date="may-27-2022"
 
 (here the api is requesting for employees that are eligible to receive the bonus as on may 27 2022)
 
