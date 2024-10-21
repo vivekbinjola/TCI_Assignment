@@ -1,4 +1,4 @@
-                                                                          TCI Assignment
+TCI Assignment
 1. Assignment Introduction
 2. Assignment Details
 3. POST API Signature and Payload
