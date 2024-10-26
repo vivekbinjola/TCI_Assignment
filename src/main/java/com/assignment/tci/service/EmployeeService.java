@@ -1,20 +1,18 @@
 package com.assignment.tci.service;
-import com.assignment.tci.dto.BonusEligibleResponse;
+
+import com.assignment.tci.models.*;
 import com.assignment.tci.dto.EmployeeRequest;
-import com.assignment.tci.models.Department;
-import com.assignment.tci.models.Employee;
 import com.assignment.tci.repository.DepartmentRepository;
 import com.assignment.tci.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,8 +25,12 @@ public class EmployeeService {
     @Autowired
     private DepartmentRepository departmentRepository;
 
-//    Saving employees data in the employee table and departmentName in the department table using JPA functions.
+
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
+
+    //    Saving employee's data in the employee table and departmentName in the department table using JPA functions.
     public void saveEmployees(EmployeeRequest employeeRequestBody) {
+
 //        Fetching Individual Employees
         employeeRequestBody.getEmployees().stream().forEach(employee -> {
             log.info("Entered ForEach");
@@ -44,23 +46,35 @@ public class EmployeeService {
             SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMM-dd-yyyy");
 //          Creating and storing new employees using Employee Object
             Employee employee1 = new Employee();
+            employee1.setEmpName(employee.getEmpName());
             employee1.setDepartment(department);
             employee1.setAmount(employee.getAmount());
             employee1.setCurrency(employee.getCurrency());
-            try{
-            employee1.setExitDate( DATE_FORMATTER.parse(employee.getExitDate()));
-            employee1.setJoiningDate((DATE_FORMATTER.parse(employee.getJoiningDate())));
-            }catch(ParseException e){
+            try {
+                employee1.setExitDate(DATE_FORMATTER.parse(employee.getExitDate()));
+                employee1.setJoiningDate((DATE_FORMATTER.parse(employee.getJoiningDate())));
+            } catch (ParseException e) {
                 log.info(String.valueOf(e.getStackTrace()));
             }
             // Saving Employees Data
-            employee1.setEmpName(employee.getEmpName());
             employeeRepository.save(employee1);
         });
 
     }
 
-    public List<BonusEligibleResponse.CurrencyGroup> getBonusEligibleEmployees(Date requestedDate) {
+
+    public List<EmployeeCurrencyGroup> getBonusEligibleEmployees(String dateStr) {
+
+        Date requestedDate;
+        // Parse the input date
+        try {
+            SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMM-dd-yyyy");
+            requestedDate = DATE_FORMATTER.parse(dateStr);
+            System.out.println(requestedDate);
+        } catch (ParseException e) {
+            throw new RuntimeException("Date Formatting is incorrect");
+        }
+
 //       Taking all Employees from the DB
         List<Employee> allEmployees = employeeRepository.findAll();
 
@@ -68,19 +82,30 @@ public class EmployeeService {
         List<Employee> eligibleEmployees = allEmployees.stream()
                 .filter(emp -> emp.getJoiningDate().before(requestedDate) && emp.getExitDate().after(requestedDate))
                 .sorted(Comparator.comparing(Employee::getEmpName))
-                .collect(Collectors.toList());
+                .toList();
 
         // step 2 : Grouping employees by currency
         Map<String, List<Employee>> groupedByCurrency = eligibleEmployees.stream()
                 .collect(Collectors.groupingBy(Employee::getCurrency));
 
         // sending the response in the requested format
-        return groupedByCurrency.entrySet().stream()
-                .map(entry -> new BonusEligibleResponse.CurrencyGroup(entry.getKey(),
-                        entry.getValue().stream()
-                                .map(emp -> new BonusEligibleResponse.EmployeeRequestBonus(emp.getEmpName(), emp.getAmount()))
-                                .collect(Collectors.toList())))
-                .collect(Collectors.toList());
+        List<EmployeeCurrencyGroup> employeeCurrencyGroups = new ArrayList<>();
+
+        groupedByCurrency.forEach((key, value) -> {
+            employeeCurrencyGroups.add(
+                    new EmployeeCurrencyGroup(key, value.stream()
+                            .map(emp -> new EmployeeDetails(emp.getEmpName(), emp.getAmount()))
+                            .collect(Collectors.toList())));
+        });
+
+        return employeeCurrencyGroups;
+
+//                groupedByCurrency.entrySet().stream()
+//                .map(entry -> new EmployeeCurrencyGroup(entry.getKey(),
+//                        entry.getValue().stream()
+//                                .map(emp -> new EmployeeDetails(emp.getEmpName(), emp.getAmount()))
+//                                .collect(Collectors.toList())))
+//                .collect(Collectors.toList());
+
     }
 }
-

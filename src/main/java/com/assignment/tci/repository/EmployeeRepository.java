@@ -9,6 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface EmployeeRepository  extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 }

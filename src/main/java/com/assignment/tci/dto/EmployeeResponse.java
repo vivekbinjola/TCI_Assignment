@@ -1,13 +1,16 @@
 package com.assignment.tci.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 //DTO for Employee Response
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeResponse {
 
     private Long id;
-
     private String empName;
     private Double amount;
     private String currency;
@@ -15,13 +18,5 @@ public class EmployeeResponse {
     private String exitDate;
     private String department;
 
-    public EmployeeResponse(String empName, Double amount, String currency, String joiningDate, String exitDate, String department) {
-        this.empName = empName;
-        this.amount = amount;
-        this.currency = currency;
-        this.joiningDate = joiningDate;
-        this.exitDate = exitDate;
-        this.department = department;
-    }
 
 }
