@@ -5,11 +5,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
 @Data
+@ToString(exclude = "employees")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Department {
@@ -21,9 +23,9 @@ public class Department {
     private String name;
 
     // One-to-many relationship with employees
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
-    private List<Employee> employees;
 
+    @OneToMany(mappedBy = "department", cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+    private List<Employee> employees;
 
     public Department(long id, String name) {
         this.id = id;

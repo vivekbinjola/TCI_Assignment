@@ -30,8 +30,11 @@ public class Employee {
     private Date exitDate;
 
     // Many-to-one relationship with department
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
+
+
 
 }

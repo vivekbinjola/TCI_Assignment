@@ -83,7 +83,7 @@ public class EmployeeService {
                 .filter(emp -> emp.getJoiningDate().before(requestedDate) && emp.getExitDate().after(requestedDate))
                 .sorted(Comparator.comparing(Employee::getEmpName))
                 .toList();
-
+        logger.info("eligibleEmployees {}", eligibleEmployees);
         // step 2 : Grouping employees by currency
         Map<String, List<Employee>> groupedByCurrency = eligibleEmployees.stream()
                 .collect(Collectors.groupingBy(Employee::getCurrency));
