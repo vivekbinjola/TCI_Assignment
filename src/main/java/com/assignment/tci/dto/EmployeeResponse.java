@@ -19,4 +19,6 @@ public class EmployeeResponse {
     private String department;
 
 
+    public EmployeeResponse(String raj_singh, double v, String inr, String s, String s1, String accounts) {
+    }
 }

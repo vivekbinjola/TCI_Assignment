@@ -62,7 +62,6 @@ public class EmployeeService {
 
     }
 
-
     public List<EmployeeCurrencyGroup> getBonusEligibleEmployees(String dateStr) {
 
         Date requestedDate;
@@ -90,7 +89,6 @@ public class EmployeeService {
 
         // sending the response in the requested format
         List<EmployeeCurrencyGroup> employeeCurrencyGroups = new ArrayList<>();
-
         groupedByCurrency.forEach((key, value) -> {
             employeeCurrencyGroups.add(
                     new EmployeeCurrencyGroup(key, value.stream()

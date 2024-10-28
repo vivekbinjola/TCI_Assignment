@@ -9,5 +9,4 @@ public class EmployeeDetails {
     private String empName;
     private Double amount;
 
-
 }
